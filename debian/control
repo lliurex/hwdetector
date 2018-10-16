@@ -1,0 +1,21 @@
+Source: hwdetector
+Section: utils
+Priority: optional
+Maintainer: M.Angel Juan <m.angel.juan@gmail.com>
+Build-Depends: debhelper (>=9), python-all,python-setuptools,dh-python
+Standards-Version: 3.9.6
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://anonscm.debian.org/collab-maint/hwdetector.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/hwdetector.git
+
+Package: hwdetector
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-dill
+Description: Simple system detector
+ Simple system detector
+
+Package: valentin
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, hwdetector, python-gi
+Description: Diagnosys system
+ Simple system detector with system checks and hints
