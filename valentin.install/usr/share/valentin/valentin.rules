@@ -1,0 +1,18 @@
+LLIUREX_VERSION = none -> 'This system can\'t be detected as a LliureX system, detection only makes simpler tests'
+NETINFO.eth*.state != up -> 'Interface {} has no link' ? "Maybe the cable is not correctly plugged in!"
+NETINFO.gw @ not_exist -> 'This system hasn\'t gateway' ? "Wrong network settings or network interface disabled"
+NETINFO.gw.reachable = false -> "The gateway isn't reachable" ? 'Maybe the network hardware is powered off?',"Maybe any cable is not correctly plugged in!"
+NETINFO.internet.ping = false -> "Seems that something blocks ping internet hosts"
+NETINFO.internet.http_get = false -> 'Lliurex.net isn\'t accesible'
+RESOLVER_INFO.unreachable () _unreachable -> '{} is not reachable'
+LLIUREX_RELEASE = server , SYSTEMCTL_INFO.byunit.apache2.sub != running -> 'This server must have the apache service running' ? "Try restart apache2 with sysctl or view logfile"
+LLIUREX_RELEASE = server , SYSTEMCTL_INFO.byunit.apache2.sub = running , PROCESS_INFO.full_cmd~apache2 @ not_exist -> 'Apache 2 not detected in process list' ? "Try restart the apache service with sysctl or view logfile"
+LLIUREX_RELEASE = server , SYSTEMCTL_INFO.byunit.epoptes.sub != running -> 'This server must have the epoptes service running' ? "Try restart epoptes with sysctl or view logfile"
+LLIUREX_RELEASE = server , SYSTEMCTL_INFO.byunit.epoptes.sub = running, PROCESS_INFO.full_cmd~epoptes @ not_exist -> 'epoptes not detected in process list' ? "Try restart the epoptes service with sysctl or view logfile"
+LLIUREX_RELEASE = server , SYSTEMCTL_INFO.byunit.epoptes.sub = running, PROCESS_INFO.full_cmd~socat @ not_exist -> 'socat not detected in process list' ? "Try restart the epoptes service with sysctl or view logfile"
+LLIUREX_RELEASE = server , SYSTEMCTL_INFO.byunit.dnsmasq.sub != running -> 'This server must have the dnsmasq service running' ? "Try restart dnsmasq with sysctl or view logfile"
+LLIUREX_RELEASE = server , SYSTEMCTL_INFO.byunit.dnsmasq.sub = running, PROCESS_INFO.full_cmd~dnsmasq @ not_exist-> 'dnsmasq not detected in process list' ? "Try restart the dnsmasq service with sysctl or view logfile"
+LLIUREX_RELEASE = server , SYSTEMCTL_INFO.byunit.slapd.sub != running -> 'This server must have the slapd service running' ? "Try restart slapd with sysctl or view logfile"
+LLIUREX_RELEASE = server , SYSTEMCTL_INFO.byunit.slapd.sub = running, PROCESS_INFO.full_cmd~slapd @ not_exist -> 'slapd not detected in process list' ? "Try restart the slapd service with sysctl or view logfile"
+USER_TEST.*.perm_ok != true -> 'User {} has wrong permissions into /home/{}' ? "Maybe {} logged-in, previously with non-graphical session logging with graphical session should correct this problem automatically"
+USER_TEST.*.mounts_ok !% none -> 'User {} has wrong mounts' ? "Try to restart the session or restart the computer otherwise contact with your administrator with traces file"
