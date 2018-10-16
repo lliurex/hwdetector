@@ -1,3 +1,9 @@
+hwdetector (0.1.7.16) bionic; urgency=medium
+
+  * Initial release for bionic
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 16 Oct 2018 17:42:21 +0200
+
 hwdetector (0.1.7.6) xenial; urgency=medium
 
   * Fix blocking bug checking socket ports
