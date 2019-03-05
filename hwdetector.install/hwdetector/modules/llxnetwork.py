@@ -33,7 +33,7 @@ class LlxNetwork(Detector):
                     rt[u'names'][u'gw'] = d[u'via']
                 else:
                     m = re.search(
-                        r'(?P<net>\S+) dev (?P<dev>\w+)\s+(?:proto kernel)?\s+scope link\s+(?:metric \d+)?\s+(?:src (?P<src>\S+))?',
+                        r'(?P<net>\S+) dev (?P<dev>\w+)\s+(?:proto kernel\s+)?scope link\s+(?:metric \d+)?(?:src (?P<src>\S+))?',
                         line)
                     d = m.groupdict()
                     if not u'src' in d or d[u'src'] == None:
@@ -96,7 +96,8 @@ class LlxNetwork(Detector):
             if aliasnum > 1:
                 output[iface].update({u'nalias': aliasnum - 1})
                 aliasnum = 1
-        output.setdefault(u'RAW',self.execute(run=u'ifconfig -a',stderr=None))
+#        output.setdefault(u'RAW',self.execute(run=u'ifconfig -a',stderr=None))
+        output.setdefault(u'RAW',self.execute(run=u'ip a',stderr=None))
         return output
 
     def get_proxy(self,*args,**kwargs):
@@ -160,7 +161,8 @@ class LlxNetwork(Detector):
         return output
 
     def get_listens(self,*args,**kwargs):
-        netstat_listen=self.execute(run=u'netstat -4tuln',stderr=None).split(u'\n')
+#        netstat_listen=self.execute(run=u'netstat -4tuln',stderr=None).split(u'\n')
+        netstat_listen=self.execute(run=u'ss -4tuln',stderr=None).split(u'\n')
         # TODO:CHECK PROCESS USING PORT AND STORE IT
         regexp=re.compile(r'(?P<PROTO>\w+)\s+\d+\s+\d+\s+(?P<LISTEN_ON>[^:\s]+):(?P<PORT>\d+)\s+.*$')
         netstat_info={u'BYPROTO':{},u'BYPORT':{}}
