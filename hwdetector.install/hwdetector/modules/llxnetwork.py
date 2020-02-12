@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import hwdetector.Detector as Detector
 import hwdetector.utils.log as log
 import re
@@ -25,7 +25,8 @@ class LlxNetwork(Detector):
             for line in routes:
                 if u'default' in line:
                     m = re.search(r'default via (?P<via>\S+) dev (?P<dev>\w+)', line)
-                    d = m.groupdict()
+                    if m:
+                        d = m.groupdict()
                     if not d[u'dev'] in rt:
                         rt[d[u'dev']] = []
                     rt[d[u'dev']].append({u'src': u'0.0.0.0', u'net': d[u'via']})
@@ -35,7 +36,8 @@ class LlxNetwork(Detector):
                     m = re.search(
                         r'(?P<net>\S+) dev (?P<dev>\w+)\s+(?:proto kernel\s+)?scope link\s+(?:metric \d+)?(?:src (?P<src>\S+))?',
                         line)
-                    d = m.groupdict()
+                    if m:
+                        d = m.groupdict()
                     if not u'src' in d or d[u'src'] == None:
                         d[u'src'] = u'unknown'
                     if not d[u'dev'] in rt:

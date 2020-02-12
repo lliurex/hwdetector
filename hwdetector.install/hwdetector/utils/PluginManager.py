@@ -2,22 +2,27 @@ import os
 import sys
 import importlib
 import inspect
-from log import log
+from .log import log
 
 #log.debug(u'File '+__name__+u' loaded')
 
 def load_module(module_path, filename):
-    u''" returns the module if filename is a module else None u''"
-    if filename.endswith(u'.py'):
-        module = filename[:-3]
-    elif os.path.exists(os.path.join(module_path, filename, u'__init__.py')):
-        module = filename
-    else:
-        return None
     try:
-        return importlib.import_module(module)
-    except:
-        log.exception(u'Loading %s failed.' % module)
+        print('Loading module: %s'%filename)
+        u''" returns the module if filename is a module else None u''"
+        if filename.endswith(u'.py'):
+            module = filename[:-3]
+        elif os.path.exists(os.path.join(module_path, filename, u'__init__.py')):
+            module = filename
+        else:
+            return None
+        try:
+            return importlib.import_module(module)
+        except:
+            log.exception(u'Loading %s failed.' % module)
+            return None
+    except exception as e:
+        log.exception('[UTILS][PluginManager]: %s' %e)
         return None
 
 class PluginManager(object):

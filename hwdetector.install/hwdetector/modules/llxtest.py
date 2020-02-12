@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import hwdetector.Detector as Detector
 import hwdetector.utils.log as log
 import json
@@ -22,18 +22,18 @@ class CTest(object):
             status=False
 
         for x in self.attrib:
-            print x
+            print (x)
 
         return status
 
 def toString2(*args,**kwargs):
     try:
         for x in self.attrib:
-            print x
+            print (x)
         return True
     except:
         for x in range(1,3):
-            print x
+            print (x)
         return True
     return False
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import hwdetector.Detector as Detector
 import hwdetector.utils.log as log
 import os.path

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import hwdetector.Detector as Detector
 import hwdetector.utils.log as log
 import os.path
@@ -14,8 +14,8 @@ class LlxN4d(Detector):
 
     def check_n4d(self,*args,**kwargs):
         output ={}
-        output[u'N4D_STATUS']={u'online':unicode(self.check_open_port(u'9779'))}
-        output[u'N4D_STATUS'].update({u'resolvable':unicode(self.check_ns(u'server'))})
+        output[u'N4D_STATUS']={u'online':str(self.check_open_port(u'9779'))}
+        output[u'N4D_STATUS'].update({u'resolvable':str(self.check_ns(u'server'))})
 
         try:
             if os.path.isfile(u'/var/log/n4d/n4d-server'):
@@ -39,7 +39,7 @@ class LlxN4d(Detector):
                     output[u'N4D_MODULES']={u'available':dict(zip(available,available)),u'failed':dict(zip(failed,failed))}
         except Exception as e:
             output[u'N4D_STATUS'].update({u'initlog':u'not available'})
-            output[u'N4D_STATUS'].update({u'initlog_error': unicode(e)})
+            output[u'N4D_STATUS'].update({u'initlog_error': str(e)})
 
         return output
 

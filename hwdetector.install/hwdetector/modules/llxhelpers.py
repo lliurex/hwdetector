@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import hwdetector.Detector as Detector
 import hwdetector.utils.log as log
 import re
-import urllib2 as urllib
+#import urllib2 as urllib
+import urllib.request as urllib
 import os.path
 import grp,pwd
 import subprocess,time
@@ -48,20 +49,21 @@ class LlxHelpers(Detector):
             try:
                 with open(args[0],u'r') as f:
                     for line in f.readlines():
-                        line=line.decode('utf-8')
+                        #line=line.decode('utf-8')
+                        line=line
                         m=re.match(reg,line)
                         if not m:
                             r += line
             except Exception as e:
                 log.warning(u'Trying to read unreadable file {}'.format(args[0]))
-                r += unicode(u'NOT_READABLE')
+                r += str(u'NOT_READABLE')
 
 
         else:
             if isinstance(args[0],list):
                 string = u''.join(str(args[0]))
             else:
-                string=unicode(args[0])
+                string=str(args[0])
 
             reg=re.compile(r'^(\s*|#.*)*$')
             for line in string.split(u'\n'):
@@ -103,16 +105,16 @@ class LlxHelpers(Detector):
             content = urllib.urlopen(args[0])
             data = content.read()
             try:
-                data=data.decode(u'utf-8')
+                data=data
             except UnicodeDecodeError:
-                data=data.encode(u'utf-8')
+                data=data
             return data
         except Exception as e:
             return None
 
     def file_find_line(self, content, *args, **kwargs):
 
-        if not (isinstance(content,str) or isinstance(content,list) or isinstance(content,unicode)):
+        if not (isinstance(content,str) or isinstance(content,list) or isinstance(content,str)):
             return None
 
         is_file=os.path.isfile(content)
@@ -308,7 +310,7 @@ class LlxHelpers(Detector):
                             return (u'__gz__',base64.b64encode(zlib.compress(content.strip())))
                 except Exception as e:
                     log.warning(u'Fail compressing file {} : {}'.format(file,str(e).decode('utf-8')))
-                    return unicode(u'NOT_READABLE')
+                    return str(u'NOT_READABLE')
         if string:
             try:
                 try:
@@ -330,10 +332,10 @@ class LlxHelpers(Detector):
             return None
 
         paths=[]
-        if isinstance(path,str) or isinstance(path,unicode):
+        if isinstance(path,str) or isinstance(path,str):
             paths.append(path)
         elif isinstance(path,list):
-            for x in [ x for x in path if isinstance(x,str) or isinstance(x,unicode) ]:
+            for x in [ x for x in path if isinstance(x,str) or isinstance(x,str) ]:
                 paths.append(x)
         else:
             return None
