@@ -1,16 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import os
 import hwdetector.utils.log as log
 #log.debug(u'File '+__name__+u' loaded')
-import utils.PluginManager as PluginManager
+#import utils.PluginManager as PluginManager
+from .utils.PluginManager import PluginManager as PluginManager
 from multiprocessing import Process,Pipe
 import time
 import types
 import dill as pickle
 import copy
 
-from Detector import Detector
+from .Detector import Detector
 
 class HwDetector:
     def __init__(self,*args,**kwargs):
@@ -374,7 +375,7 @@ class HwDetector:
                                 if need.lower()[0:6] == u'helper':
                                     f=pickle.loads(self.helpers[need])
                                     dummy_func=types.FunctionType(f[u'code'].__code__,f[u'glob'],f[u'code'].__code__.co_name)
-                                    dummy_func.func_globals.update({u'self':f[u'code'].im_self})
+                                    dummy_func.__globals__.update({u'self':f[u'code'].__self__})
                                     obj.__dict__[f[u'code'].__code__.co_name]=dummy_func
                                     setattr(obj,f[u'code'].__code__.co_name,f[u'code'])
                                     log.debug(u'Helper {} registered into {}'.format(need,obj.__class__.__name__))

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import hwdetector.Detector as Detector
 import hwdetector.utils.log as log
 import re
@@ -42,6 +42,6 @@ class LlxTime(Detector):
                         output.update(m.groupdict())
                         break
         except Exception as e:
-            ntp_st = unicode(e)
+            ntp_st = str(e)
 
         return {u'TIME':output,u'NTP_INFO':{u'STATE':{u'synced':synced,u'status':ntp_st.strip()},u'CONFIG':self.uncomment(u'/etc/ntp.conf')}}

@@ -1,2 +1,2 @@
-from log import log
-from PluginManager import PluginManager
+from .log import log
+from .PluginManager import PluginManager
