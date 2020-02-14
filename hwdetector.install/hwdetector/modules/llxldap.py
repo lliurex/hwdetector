@@ -90,7 +90,7 @@ class LlxLdap(Detector):
         return out
 
     def parse_tree(self,*args,**kwargs):
-        if not (isinstance(args[0],str) or isinstance(args[0],unicode)):
+        if not (isinstance(args[0],str) or isinstance(args[0],str)):
             return None
         output = {}
         lines = args[0].split(u'\n')
@@ -160,15 +160,24 @@ class LlxLdap(Detector):
     def checkpass(self,*args,**kwargs):
         p=args[0]
         if self.pwd:
+            
             hash_digest_with_salt=base64.b64decode(base64.b64decode(p)[6:]).strip()
             salt=hash_digest_with_salt[hashlib.sha1().digest_size:]
-            compare=base64.b64encode(u'{SSHA}' + base64.encodestring(hashlib.sha1(str(self.pwd) + salt).digest() + salt))
+
+            #compare=base64.b64encode(u'{SSHA}' + base64.encodestring(hashlib.sha1(unicode(self.pwd) + salt).digest() + salt))
+            
+            b64encoded=base64.encodestring(hashlib.sha1((self.pwd + salt.decode("utf-8")).encode("utf-8")).digest()+salt)
+            #print(u'{SSHA}' + b64encoded.decode("utf-8"))
+            compare=base64.b64encode((u'{SSHA}' + b64encoded.decode("utf-8")).encode("utf-8"))
+
+
+            #compare=base64.b64encode(u'{SSHA}' + base64.encodestring(hashlib.sha1((self.pwd + salt.decode("utf-8")).encode("utf-8")).digest() + salt.decode("utf-8")))
             return p == compare
         return None
 
     def get_ldap_config(self,*args,**kwargs):
-        release=unicode(args[0]).lower()
-        server=unicode(args[1])
+        release=str(args[0]).lower()
+        server=str(args[1])
         root_mode=self.check_root()
         kw={u'stderr':None}
 

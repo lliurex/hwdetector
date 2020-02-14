@@ -14,7 +14,7 @@ class LlxNetworkResolver(Detector):
         self.output={u'RESOLVED': [] ,u'UNRESOLVED':[],u'REACHABLE':[],u'UNREACHABLE':[],u'STATUS':True}
 
     def addr_checks(self,*args,**kwargs):
-        ns=unicode(args[0])
+        ns=str(args[0])
         ret=False
         only_ip = re.findall(u'\d+\.\d+\.\d+\.\d+',ns)
         go_to_ping = True
