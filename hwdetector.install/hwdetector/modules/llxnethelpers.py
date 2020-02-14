@@ -60,7 +60,7 @@ class LlxNetHelpers(Detector):
         if len(args) > 1:
             return None
         try:
-            ip=socket.gethostbyname(unicode(args[0]))
+            ip=socket.gethostbyname(str(args[0]))
             return ip
         except:
             log.warning(u'Fail checking dnsname {}'.format(args[0]))

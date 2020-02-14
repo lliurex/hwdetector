@@ -15,7 +15,7 @@ class LlxUsersTest(Detector):
         if isinstance(kwargs[u'result'],list):
             result=kwargs[u'result']
         else:
-            result=[unicode(kwargs[u'result'])]
+            result=[str(kwargs[u'result'])]
 
         for x in result:
             ret+=u'{}> {}: {}\n'.format(self.__class__.__name__,x,kwargs[u'msg'])
@@ -27,7 +27,8 @@ class LlxUsersTest(Detector):
         msg_debug=[]
         mounts_info=kwargs[u'MOUNTS_INFO']
         user_test=kwargs[u'USER_TEST']
-        for u in sorted(user_test.iterkeys()):
+
+        for u in sorted(user_test.keys()):
             status=True
             if user_test[u][u'HAS_HOME']:
                 msg_debug.append(u'\n{}\n'.format(u.upper()))

@@ -15,7 +15,7 @@ class LlxSystemTest(Detector):
         if isinstance(kwargs[u'result'],list):
             result=kwargs[u'result']
         else:
-            result=[unicode(kwargs[u'result'])]
+            result=[str(kwargs[u'result'])]
 
         for x in result:
             ret+=u'{}> {}: {}\n'.format(self.__class__.__name__,x,kwargs[u'msg'])
@@ -23,7 +23,7 @@ class LlxSystemTest(Detector):
 
     def run(self,*args,**kwargs):
 
-        release=unicode(kwargs[u'LLIUREX_RELEASE'])
+        release=str(kwargs[u'LLIUREX_RELEASE'])
         status=True
         msg=[]
 

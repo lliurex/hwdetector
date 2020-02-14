@@ -106,7 +106,7 @@ class LlxUsers(Detector):
     def run(self,*args,**kwargs):
         output={}
         LDAP_INFO=kwargs[u'LDAP_INFO']
-        LLIUREX_RELEASE=unicode(kwargs[u'LLIUREX_RELEASE']).lower()
+        LLIUREX_RELEASE=str(kwargs[u'LLIUREX_RELEASE']).lower()
         logged_users=self.users_logged()
         myinfo=self.who_i_am()
 
@@ -123,7 +123,7 @@ class LlxUsers(Detector):
             admins=[]
             teachers=[]
             try:
-                if unicode(kwargs[u'LOGIN_TYPE']).lower() == u'ldap':
+                if str(kwargs[u'LOGIN_TYPE']).lower() == u'ldap':
                     if u'students' in myinfo[u'groups']:
                         users.append(fake_ldap_info)
                     elif u'teachers' in myinfo[u'groups']:
