@@ -15,6 +15,6 @@ Description: Simple system detector
 
 Package: valentin
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, hwdetector, python-gi
+Depends: ${shlibs:Depends}, ${misc:Depends}, hwdetector, python3-gi
 Description: Diagnosys system
  Simple system detector with system checks and hints
