@@ -1,26 +1,26 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from hwdetector.utils.log import log
 import re
 
-T_COMMENT=u'#'
-T_MULTIPLE=u'*'
-T_CAPTURE=u'()'
-T_FIND=u'~'
-T_REPLACE=u'{}'
-T_SEP=u','
-T_SPLIT=u'->'
-T_HINT=u'?'
-T_CHILD=u'.'
-T_EQUAL=u'='
-T_NOT_EQUAL=u'!='
-T_LIKE=u'%'
-T_NOT_LIKE=u'!%'
-T_GT=u'<'
-T_LT=u'>'
-T_CONTAIN=u'%'
-T_EXISTENCE=u'@'
-L_STR=[u'\'',u'"']
-L_EMPTY=[u'\t',u' ']
+T_COMMENT='#'
+T_MULTIPLE='*'
+T_CAPTURE='()'
+T_FIND='~'
+T_REPLACE='{}'
+T_SEP=','
+T_SPLIT='->'
+T_HINT='?'
+T_CHILD='.'
+T_EQUAL='='
+T_NOT_EQUAL='!='
+T_LIKE='%'
+T_NOT_LIKE='!%'
+T_GT='<'
+T_LT='>'
+T_CONTAIN='%'
+T_EXISTENCE='@'
+L_STR=['\'','"']
+L_EMPTY=['\t',' ']
 
 class ruleset:
     def __init__(self):
@@ -62,7 +62,7 @@ class ruleset:
                             idxs.append(i)
                             break
                         tmp=st.index(s,tmp+1)
-                        if st[tmp-1]!=u'\\':
+                        if st[tmp-1]!='\\':
                             double=not double
                             i=tmp
                 except Exception as e:
@@ -108,8 +108,8 @@ class ruleset:
 
     def clean_quotes(self,*args,**kwargs):
         v=args[0]
-        if isinstance(v,str) or isinstance(v,unicode):
-            return v.strip(u''.join(L_STR))
+        if isinstance(v,str) or isinstance(v,str):
+            return v.strip(''.join(L_STR))
         elif isinstance(v,dict):
             for v2 in v:
                 v[v2]=self.clean_quotes(v[v2])
@@ -127,28 +127,28 @@ class ruleset:
             if not done and isinstance(search_on,dict):
                 #    raise Exception(u'Use of key \'{}\xu' isn\'t permitted, only dict keys are matched in rules'.format(levelkey))
                 changed_key=None
-                for lkey in search_on.keys():
+                for lkey in list(search_on.keys()):
                     if lkey != levelkey and lkey.lower() == levelkey.lower():
                         changed_key=levelkey
                         levelkey=lkey
 
                 if T_MULTIPLE in levelkey:
-                    searched_keys=[x for x in search_on.keys() if levelkey.replace(T_MULTIPLE,u'') in x]
+                    searched_keys=[x for x in list(search_on.keys()) if levelkey.replace(T_MULTIPLE,'') in x]
                     if searched_keys:
                         for r in searched_keys:
                             new_fact=fact.replace(levelkey,r).strip()
                             new_consequences=consequences.replace(T_REPLACE,r).strip()
                             try:
-                                self.make_rule(u'{} -> {} '.format(new_fact,new_consequences))
-                                log.debug(u'Rule repetat: Unrolling to: {} -> {}'.format(new_fact,new_consequences))
+                                self.make_rule('{} -> {} '.format(new_fact,new_consequences))
+                                log.debug('Rule repetat: Unrolling to: {} -> {}'.format(new_fact,new_consequences))
                             except:
-                                log.debug(u'Rule repeat: Cannot unroll to: {} -> {}'.format(new_fact,new_consequences))
+                                log.debug('Rule repeat: Cannot unroll to: {} -> {}'.format(new_fact,new_consequences))
                         return None
                     else:
-                        raise Exception(u'Can\'t apply template \'{}\''.format(levelkey))
+                        raise Exception('Can\'t apply template \'{}\''.format(levelkey))
                 else:
-                    if levelkey not in search_on.keys():
-                        raise Exception(u'Use of key \'{}\' not possible'.format(levelkey))
+                    if levelkey not in list(search_on.keys()):
+                        raise Exception('Use of key \'{}\' not possible'.format(levelkey))
                     #fact_key.append(levelkey)
                     search_on=search_on[levelkey]
                     if i == len_split:
@@ -160,7 +160,7 @@ class ruleset:
                         try:
                             search,val=levelkey.split(T_FIND)
                         except:
-                            raise Exception(u'Incorrect use for find token')
+                            raise Exception('Incorrect use for find token')
                         lkeys=[key for key in item if search.lower() == key.lower()]
                         if lkeys:
                             search = lkeys[0]
@@ -189,20 +189,20 @@ class ruleset:
 
 
     def make_rule(self,*args,**kwargs):
-        clean=lambda x: str(x).replace(u'\\',u'').strip()
+        clean=lambda x: str(x).replace('\\','').strip()
         line=args[0]
         line=line.split(T_SPLIT)
-        rule={u'facts':[],u'consequences':[],u'hints':[]}
+        rule={'facts':[],'consequences':[],'hints':[]}
         if len(line) < 2:
-            raise Exception(u'No consequences in rule')
+            raise Exception('No consequences in rule')
         if len(line) > 2:
-            raise Exception(u'Multiple consequences in rule')
+            raise Exception('Multiple consequences in rule')
         facts=line[0]
         consequences=line[1]
-        if consequences.strip() == u'':
-            raise Exception(u'Empty consequences')
-        if facts.strip() == u'':
-            raise Exception(u'Empty facts')
+        if consequences.strip() == '':
+            raise Exception('Empty consequences')
+        if facts.strip() == '':
+            raise Exception('Empty facts')
         fact_list=facts.split(T_SEP)
         for f in fact_list:
             if f:
@@ -216,15 +216,15 @@ class ruleset:
                     op,vtmp=self.read_until(vtmp,self.l_ops,True)
                 except:
                     raise e
-                if op == u'':
-                    raise Exception(u'Missing op')
+                if op == '':
+                    raise Exception('Missing op')
                 if op not in self.l_ops:
-                    raise Exception(u'Wrong op')
+                    raise Exception('Wrong op')
 
                 #read value
                 vtmp,end=self.read_until(vtmp,self.l_ops+self.l_spliters)
-                if vtmp == u'' and op != T_CAPTURE:
-                    raise Exception(u'Wrong value')
+                if vtmp == '' and op != T_CAPTURE:
+                    raise Exception('Wrong value')
 
                 value=self.search_key_coincidence(self.data,ftmp,f,consequences,op,vtmp)
                 if value == None:
@@ -232,10 +232,10 @@ class ruleset:
                 self.data_values[ftmp]=value
 
                 if vtmp and op == T_CAPTURE:
-                    log.debug(u'Capturing {} to {} '.format(value,vtmp))
+                    log.debug('Capturing {} to {} '.format(value,vtmp))
                     self.data.setdefault(vtmp,value)
 
-                rule[u'facts'].append({u'key':ftmp,u'op':op,u'value':vtmp})
+                rule['facts'].append({'key':ftmp,'op':op,'value':vtmp})
         try:
             try:
                 consequences,hints=self.read_until(consequences,[T_HINT])
@@ -249,8 +249,8 @@ class ruleset:
 
             for c in lconsequences:
                 if c[0] != c[-1] and c[0] not in L_STR:
-                    raise Exception(u'Consequences mus\'t be enclosed with quotes')
-            rule[u'consequences']=lconsequences
+                    raise Exception('Consequences mus\'t be enclosed with quotes')
+            rule['consequences']=lconsequences
             hints=hints[1:]
             try:
                 if hints:
@@ -264,11 +264,11 @@ class ruleset:
                     #lhints=[clean(h) for h in hints.split(T_SEP)]
                     for h in lhints:
                         if h[0] != h[-1] and h[0] not in L_STR:
-                            raise Exception(u'Hints mus\'t be enclosed with quotes')
-                    rule[u'hints']=lhints
+                            raise Exception('Hints mus\'t be enclosed with quotes')
+                    rule['hints']=lhints
             except:
                 pass #hints are optional
-            for k in [u'facts',u'consequences',u'hints']:
+            for k in ['facts','consequences','hints']:
                 for i in range(len(rule[k])):
                     rule[k][i] = self.clean_quotes(rule[k][i])
         except Exception as e:
@@ -277,41 +277,41 @@ class ruleset:
         self.rules.append(rule)
 
     def load_ruleset(self,*args,**kwargs):
-        fileruleset=kwargs.get(u'fileruleset',None)
+        fileruleset=kwargs.get('fileruleset',None)
         if not fileruleset:
-            raise Exception(u'No fileruleset in kwargs')
-        self.data=kwargs.get(u'data',None)
+            raise Exception('No fileruleset in kwargs')
+        self.data=kwargs.get('data',None)
         if not self.data:
-            raise Exception(u'Empty data')
+            raise Exception('Empty data')
         try:
-            with open(fileruleset,u'r') as f:
+            with open(fileruleset,'r') as f:
                 l=0
                 for line in f:
                     l+=1
                     try:
-                        if not line.strip().startswith(u'#'):
+                        if not line.strip().startswith('#'):
                             self.make_rule(line)
                     except Exception as e:
-                        log.error(u'Rule: \'{}\' : {}'.format(line,e))
-                log.info(u'{} lines processed, {} rules loaded'.format(l,len(self.rules)))
+                        log.error('Rule: \'{}\' : {}'.format(line,e))
+                log.info('{} lines processed, {} rules loaded'.format(l,len(self.rules)))
         except:
-            raise Exception(u'Wrong file for ruleset')
+            raise Exception('Wrong file for ruleset')
 
     def make_tree(self,*args,**kwargs):
-        lfacts=[fact for lfacts in [rule[u'facts'] for rule in self.rules] for fact in lfacts]
+        lfacts=[fact for lfacts in [rule['facts'] for rule in self.rules] for fact in lfacts]
         count_facts={}
         for fact in lfacts:
-            count_facts.setdefault(fact[u'key'],0)
-            count_facts[fact[u'key']]+=1
-            log.debug(u'Ordering key {} = {}'.format(fact[u'key'],count_facts[fact[u'key']]))
+            count_facts.setdefault(fact['key'],0)
+            count_facts[fact['key']]+=1
+            log.debug('Ordering key {} = {}'.format(fact['key'],count_facts[fact['key']]))
         self.keys_ordered=sorted(count_facts,key=count_facts.get,reverse=True)
 
         tmp_rules=[]
         for key in self.keys_ordered:
             for rule in self.rules:
                 found=False
-                for fact in rule[u'facts']:
-                    if fact[u'key'] == key:
+                for fact in rule['facts']:
+                    if fact['key'] == key:
                         found=True
                         break
                 if found:
@@ -320,14 +320,14 @@ class ruleset:
 
         self.rules=tmp_rules
 
-        log.debug(u'Tree keys ordered: {}'.format(u','.join(self.keys_ordered)))
+        log.debug('Tree keys ordered: {}'.format(','.join(self.keys_ordered)))
 
 
     def apply_operation(self,fact):
-        clean=lambda x: unicode(x).replace(u' ',u'').strip()
-        value=clean(fact.get(u'value')).lower()
-        key=clean(fact.get(u'key'))
-        op=clean(fact.get(u'op'))
+        clean=lambda x: str(x).replace(' ','').strip()
+        value=clean(fact.get('value')).lower()
+        key=clean(fact.get('key'))
+        op=clean(fact.get('op'))
         data_value=clean(self.data_values[key]).lower()
         ret=False
         if op == T_EQUAL:
@@ -354,7 +354,7 @@ class ruleset:
             except:
                 ret=False
 
-            if value == u'exist':
+            if value == 'exist':
                 return ret
             else:
                 return not ret
@@ -364,19 +364,19 @@ class ruleset:
 
     def make_suggestion(self,*args,**kwargs):
         def make_banner(st):
-            return u'{}\n{}'.format(st,u'-'*len(st))
+            return '{}\n{}'.format(st,'-'*len(st))
 
         for key in self.keys_ordered:
             rule_idx=0
             while rule_idx < len (self.rules):
                 rule=self.rules[rule_idx]
-                rulekeys=[fact[u'key'] for fact in rule[u'facts']]
+                rulekeys=[fact['key'] for fact in rule['facts']]
                 if key not in rulekeys:
                     rule_idx+=1
                 else:
                     clean=None
-                    for fact in rule[u'facts']:
-                        if key == fact[u'key']:
+                    for fact in rule['facts']:
+                        if key == fact['key']:
                             if self.apply_operation(fact):
                                 clean = False
                             else:
@@ -392,39 +392,39 @@ class ruleset:
                         pass
 
 
-        out={u'banner':None,u'c':[],u'h':[]}
+        out={'banner':None,'c':[],'h':[]}
         if self.rules:
-            out[u'banner']=make_banner(u'Detected:')
+            out['banner']=make_banner('Detected:')
 
         for rule in self.rules:
-            for c in rule[u'consequences']:
-                key=rule[u'facts'][0].get(u'key',u'None')
+            for c in rule['consequences']:
+                key=rule['facts'][0].get('key','None')
                 keyval=self.data_values.get(key,None)
                 if keyval:
                     if T_REPLACE in c:
                         try:
                             for li in keyval:
-                                out[u'c'].append(u'-{}!'.format(c.replace(T_REPLACE,unicode(li))))
+                                out['c'].append('-{}!'.format(c.replace(T_REPLACE,str(li))))
                         except:
-                            out[u'c'].append(u'-{}!'.format(c.replace(T_REPLACE,keyval)))
+                            out['c'].append('-{}!'.format(c.replace(T_REPLACE,keyval)))
                     else:
-                        out[u'c'].append(u'-{}!'.format(c))
+                        out['c'].append('-{}!'.format(c))
                 else:
-                    out[u'c'].append(u'-{}!'.format(c))
+                    out['c'].append('-{}!'.format(c))
 
-            if rule[u'hints']:
-                for suggestion in rule[u'hints']:
-                    out[u'h'].append(u'-{}'.format(suggestion))
+            if rule['hints']:
+                for suggestion in rule['hints']:
+                    out['h'].append('-{}'.format(suggestion))
 
-        if out[u'c']:
-            print out[u'banner']
-            for c in out[u'c']:
-                print c
+        if out['c']:
+            print(out['banner'])
+            for c in out['c']:
+                print(c)
 
-        if out[u'h']:
-            print u'\n'+make_banner(u'Things that you can do:')
-            for h in out[u'h']:
-                print h
+        if out['h']:
+            print('\n'+make_banner('Things that you can do:'))
+            for h in out['h']:
+                print(h)
         else:
-            if out[u'c']:
-                print u'\n'+make_banner(u'You don\'t need to do any actions')
+            if out['c']:
+                print('\n'+make_banner('You don\'t need to do any actions'))
