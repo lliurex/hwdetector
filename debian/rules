@@ -21,8 +21,8 @@ export PYBUILD_DESTDIR_python3=debian/hwdetector
 
 override_dh_auto_install:
 	dh_auto_install
-	python setup.py install --root $(CURDIR)/debian/hwdetector --prefix=/usr
-	python setup.py clean --all
+	python3 setup.py install --root $(CURDIR)/debian/hwdetector --prefix=/usr
+	python3 setup.py clean --all
 	rm -rf $(CURDIR)/debian/hwdetector/usr/lib/python3/site-packages
 
 
