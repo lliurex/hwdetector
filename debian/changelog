@@ -1,3 +1,9 @@
+hwdetector (0.1.7.17) bionic; urgency=medium
+
+  * Some fixes
+
+ -- M.Angel Juan <m.angel.juan@gmail.com>  Thu, 08 Oct 2020 14:37:17 +0200
+
 hwdetector (0.1.7.16) bionic; urgency=medium
 
   * Initial release for bionic
