@@ -116,7 +116,10 @@ class LlxServices(Detector):
             main_conf=self.compact_files(path=[u'/etc/dnsmasq.conf',u'/etc/dnsmasq.d/'])
             lines=self.file_find_line(main_conf,u'conf-dir',u'=',u'.+',multiple_result=True)
             paths=[line[0].split(u'=')[1].strip() for line in lines]
-            content=main_conf+u'\n'+self.compact_files(path=paths)
+            if paths:
+                content=main_conf+u'\n'+self.compact_files(path=paths)
+            else:
+                content=main_conf
             output.update({u'DNSMASQ_INFO':{u'config':content}})
 
         # SQUID
@@ -143,7 +146,10 @@ class LlxServices(Detector):
             main_conf=self.uncomment(u'/etc/samba/smb.conf',comments=[u';',u'#'])
             lines=self.file_find_line(main_conf,[[u'include',u'=',u'\S+']])
             paths=[line[0].split(u'=')[1].strip() for line in lines]
-            content=main_conf+'\n'+self.compact_files(path=paths)
+            if paths:
+                content=main_conf+'\n'+self.compact_files(path=paths)
+            else:
+                content=main_conf
             resources_local=self.execute(run=u'smbclient -L localhost -N -g',stderr=None)
             resources_server=self.execute(run=u'smbclient -L server -N -g',stderr=None)
             output.update({u'SAMBA_INFO':{u'config':content,u'resources_local':resources_local,u'resources_server':resources_server}})
