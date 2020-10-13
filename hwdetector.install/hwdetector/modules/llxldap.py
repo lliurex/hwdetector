@@ -220,7 +220,6 @@ class LlxLdap(Detector):
                 good_pass=self.checkpass(tree_config[u'config'][u'{1}mdb'][u'olcRootPW:'][0])
         else:
             good_pass=None
-
         return {u'CONFIG':tree_config,u'DB':tree_db,u'RAW_CONFIG':self.compress_file(string=config),u'RAW_DB':self.compress_file(string=db),u'INITIALIZED':init_done,u'SECRET_STATUS':good_pass}
 
     def run(self,*args,**kwargs):
@@ -257,14 +256,14 @@ class LlxLdap(Detector):
                 server=ip_server
                 if ip_server != ip_server2:
                     log.warning(u'\'server\' is not my gateway')
-            if server:
-                out.update({u'SERVER_LDAP':server})
-                out.update({u'LOCAL_LDAP':False})
-                localldap=False
-            else:
-                out.update({u'SERVER_LDAP':None})
-                out.update({u'LOCAL_LDAP':None})
-                localldap=None
+        if server:
+            out.update({u'SERVER_LDAP':server})
+            out.update({u'LOCAL_LDAP':False})
+            localldap=False
+        else:
+            out.update({u'SERVER_LDAP':None})
+            out.update({u'LOCAL_LDAP':None})
+            localldap=None
 
         self.read_pass()
 
@@ -283,7 +282,7 @@ class LlxLdap(Detector):
                 test=output[u'CONFIG'][u'CONFIG'][u'config'][u'{1}mdb'][u'olcUpdateRef']
                 mode=u'SLAVE'
                 if output[u'CONFIG'][u'CONFIG'][u'config'][u'{1}mdb'][u'olcSyncrepl'][0]:
-                    m=re.search(r'provider=ldapi?://(?P<LDAP_MASTER_IP>\d+\.\d+\.\d+\.\d+)u',output['CONFIGu']['CONFIGu']['configu']['{1}mdbu']['olcSyncrepl'][0])
+                    m=re.search(r'provider=ldapi?://(?P<LDAP_MASTER_IP>\d+\.\d+\.\d+\.\d+)u',output['CONFIG']['CONFIG']['config']['{1}mdb']['olcSyncrepl'][0])
                     if m:
                         out.update(m.groupdict())
             except:# indep or (master/slave(running without permissions))
@@ -291,6 +290,7 @@ class LlxLdap(Detector):
                 netinfo=kwargs[u'NETINFO']
                 if netinfo:
                     aliased_interfaces = [ k for k in netinfo if isinstance(netinfo[k],dict) and u'nalias' in netinfo[k] and netinfo[k][u'nalias'] > 0 ]
+
                     for i in aliased_interfaces:
                         for n in range(netinfo[i][u'nalias']):
                             if u'alias'+str(n+1)+u'_ifaddr' in netinfo[i]:
@@ -299,6 +299,21 @@ class LlxLdap(Detector):
                                     mode=u'SLAVE'
                                 elif ip_alias==u'254':
                                     mode=u'MASTER'
+                            if not out['LDAP_MASTER_IP'] and mode in ['SLAVE',MASTER]:
+                                out['LDAP_MASTER_IP']=netinfo[i][u'alias'+str(n+1)+u'_ifaddr'].split('/')[0]
+                    if not aliased_interfaces:
+                        phys_ifaces = [ dev for dev in netinfo if isinstance(netinfo[dev],dict) and 'ifaddr' in netinfo[dev] and netinfo[dev]['ifaddr'] ]
+                        for dev in phys_ifaces:
+                            ip = netinfo[dev]['ifaddr']
+                            ip = ip.split('/')
+                            octets = ip[0].split('.')
+                            if octets[0] == '10' and octets[1] == '3':
+                                if octets[3] == '1':
+                                    mode = 'SLAVE'
+                                elif octets[3] == '254':
+                                    mode = 'MASTER'
+                            if not out['LDAP_MASTER_IP'] and mode in ['SLAVE','MASTER']:
+                                out['LDAP_MASTER_IP']='.'.join(octets)
 
         output[u'FILES'] = self.check_files(release,mode,server)
         out.update( {u'LDAP_INFO':output,u'LDAP_MODE':mode})
