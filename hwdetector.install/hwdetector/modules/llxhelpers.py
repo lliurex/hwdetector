@@ -343,7 +343,11 @@ class LlxHelpers(Detector):
         paths=[x for x in paths if os.path.exists(x)]
 
         if regexp:
-            if isinstance(regexp,re._pattern_type):
+            try:
+                typ=re._pattern_type
+            except:
+                typ=re.Pattern
+            if isinstance(regexp,typ):
                 reg=regexp
             else:
                 reg=re.compile(regexp,re.UNICODE)
