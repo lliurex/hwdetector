@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import hwdetector.Detector as Detector
 import hwdetector.utils.log as log
+import os
 
 log.debug(u'File '+__name__+u' loaded')
 
@@ -11,8 +12,19 @@ class LlxVersion(Detector):
         d={}
         output={}
         output.setdefault(u'LLIUREX_VERSION',None)
-        output.update({u'LLIUREX_VERSION':self.execute(run=u'lliurex-version -n',stderr=None)})
+        output[u'ARCHITECTURE']=self.execute(run=u'arch',stderr=None)
+        try:
+            os.stat('/usr/bin/lliurex-version')
+        except:
+            log.warning('/usr/bin/lliurex-version NOT INSTALLED')
+            output.update({'LLIUREX_VERSION':'Non lliurex'})
+            output.update({'LLIUREX_RELEASE':'Non lliurex'})
+            output.update({'LLIUREX_SESSION_TYPE':'Non lliurex'})
+            output.update({'HAS_MIRROR':False})
+            output.update({'LOGIN_TYPE':'Unknown'})
+            return output
 
+        output.update({u'LLIUREX_VERSION':self.execute(run=u'lliurex-version -n',stderr=None)})
         try:
             for k,v in [ x.split(u'=') for x in self.execute(run=u'lliurex-version -a -e',stderr=None).replace(u'\n',u' ').split(u' ') ]:
                 d[k]=v

@@ -37,6 +37,9 @@ class LlxN4d(Detector):
                     available=sorted(available)
                     failed=sorted(failed)
                     output[u'N4D_MODULES']={u'available':dict(zip(available,available)),u'failed':dict(zip(failed,failed))}
+            else:
+                log.warning('/var/log/n4d/n4d-server MISSING, is n4d installed?')
+                output['N4D_MODULES']=''
         except Exception as e:
             output[u'N4D_STATUS'].update({u'initlog':u'not available'})
             output[u'N4D_STATUS'].update({u'initlog_error': str(e)})
