@@ -424,7 +424,7 @@ if __name__ == '__main__':
                     capabilities=clear_compressed(capabilities)
                     pr=json.dumps(capabilities,indent=4,separators=(',',':'),sort_keys=True)
 
-                sys.stdout.write(pr.encode('utf-8'))
+                sys.stdout.write(str(pr))
                 sys.stderr.write('\n')
             elif args.graphical_mode:
                 GObject.threads_init()
