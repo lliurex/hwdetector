@@ -71,8 +71,7 @@ class LlxNetwork(Detector):
         regif.append(r"mtu (?P<mtu>\d+)")
         regif.append(r"state (?P<state>UNKNOWN|UP|DOWN)")
         regif.append(r"link/(?:loopback|ether) (?P<ether>\S+) brd (?P<bether>\S+)")
-        regif.append(
-            r'inet (?P<ifaddr>\S+)(?: brd (?P<bcast>\S+))? scope (?:global|host) (?:dynamic )?(?P<type>\w+(?::\w+)?)(\s+valid_lft \S+ preferred_lft \S+\s+)')
+        regif.append(r'inet (?P<ifaddr>\S+)(?: brd (?P<bcast>\S+))? scope (?:global|host) ((?:dynamic |noprefixroute )?)(?P<type>\w+(?::\w+)?)(\s+valid_lft \S+ preferred_lft .*$)')
 
         for dev in devs:
             aliasnum = 1
