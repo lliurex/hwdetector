@@ -9,8 +9,8 @@ import re
 log.debug(u'File '+__name__+u' loaded')
 
 class LlxN4d(Detector):
-    _NEEDS = [u'HELPER_CHECK_OPEN_PORT',u'HELPER_CHECK_NS']
-    _PROVIDES = [u'N4D_VARS',u'N4D_STATUS',u'N4D_MODULES']
+    _NEEDS = [u'HELPER_CHECK_OPEN_PORT',u'HELPER_CHECK_NS',u'HELPER_EXECUTE']
+    _PROVIDES = [u'N4D_VARS',u'N4D_STATUS',u'N4D_MODULES',u'N4D_LAST_LOG']
 
     def check_n4d(self,*args,**kwargs):
         output ={}
@@ -18,15 +18,24 @@ class LlxN4d(Detector):
         output[u'N4D_STATUS'].update({u'resolvable':str(self.check_ns(u'server'))})
 
         try:
-            if os.path.isfile(u'/var/log/n4d/n4d-server'):
-                with open(u'/var/log/n4d/n4d-server',u'r') as f:
-                    available=[]
-                    failed=[]
-                    lines=f.readlines()
-                    ret=u''
-                    for line in lines:
-                        ret = ret + line.strip() + u'\n'
-                        m = re.search(r'\s*\[(?P<pluginname>\w+)\]\s+\S+\s+\.+\s+(?P<status>\w+)?$',line.strip())
+            since=self.execute(run='systemctl show --value --property=ActiveEnterTimestamp n4d',stderr=None)
+            status=''
+            status=self.execute(run=['journalctl','-u','n4d','-o','cat','--no-pager','-S',since,'-q'],stderr=None,asroot=True)
+            if status:
+                status = status.split('\n')
+            output['N4D_LAST_LOG']=status
+            if status:
+                available=[]
+                failed=[]
+                into_plugins=False
+                for line in status:
+                    line = line.strip()
+                    if not into_plugins and re.search('\[Core\] Initializing plugins',line):
+                        into_plugins=True
+                    if into_plugins:
+                        if re.search('\[Core\] Executing startups',line):
+                            break
+                        m = re.search(r'(?P<pluginname>\w+)\s+\.{3}\s+(?P<status>\w+)?$',line)
                         if m:
                             d=m.groupdict()
                             if d[u'status'] and d[u'pluginname']:
@@ -34,9 +43,12 @@ class LlxN4d(Detector):
                                     available.append(d[u'pluginname'])
                                 else:
                                     failed.append(d[u'pluginname'])
-                    available=sorted(available)
-                    failed=sorted(failed)
-                    output[u'N4D_MODULES']={u'available':dict(zip(available,available)),u'failed':dict(zip(failed,failed))}
+                available=sorted(available)
+                failed=sorted(failed)
+                output[u'N4D_MODULES']={u'available':dict(zip(available,available)),u'failed':dict(zip(failed,failed))}
+            else:
+                log.warning('Cannot get n4d journal')
+                output['N4D_MODULES']=''
         except Exception as e:
             output[u'N4D_STATUS'].update({u'initlog':u'not available'})
             output[u'N4D_STATUS'].update({u'initlog_error': str(e)})

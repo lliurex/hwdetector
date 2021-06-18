@@ -6,21 +6,21 @@ log.debug(u'File '+__name__+u' loaded')
 
 class LlxNetworkTest(Detector):
     _NEEDS=[u'NETINFO',u'RESOLVER_INFO',u'HELPER_CHECK_PING',u'LLIUREX_RELEASE',u'HELPER_GET_FILE_FROM_NET']
-    #_PROVIDES=[u'LLXNETWORK_TEST']
-    _PROVIDES=[u'NETINFO']
+    _PROVIDES=[u'LLXNETWORK_TEST',u'NETINFO']
+    #_PROVIDES=[u'NETINFO']
 
-    # def make_result(self,*args,**kwargs):
-    #     ret=u''
-    #     if not (u'result' in kwargs and u'msg' in kwargs):
-    #         return
-    #     if type(kwargs[u'result']) == type(list()):
-    #         result=kwargs[u'result']
-    #     else:
-    #         result=[str(kwargs[u'result'])]
-    #
-    #     for x in result:
-    #         ret+=u'{}> {}: {}\n'.format(self.__class__.__name__,x,kwargs[u'msg'])
-    #     return ret
+    def make_result(self,*args,**kwargs):
+        ret=u''
+        if not (u'result' in kwargs and u'msg' in kwargs):
+            return
+        if type(kwargs[u'result']) == type(list()):
+            result=kwargs[u'result']
+        else:
+            result=[str(kwargs[u'result'])]
+    
+        for x in result:
+            ret+=u'{}> {}: {}\n'.format(self.__class__.__name__,x,kwargs[u'msg'])
+        return ret
 
     def run(self,*args,**kwargs):
 
@@ -33,24 +33,24 @@ class LlxNetworkTest(Detector):
 
         # CHECK NETWORK STATUS
 
-        # ifaces = [x for x in netinfo.keys() if x.startswith(u'eth')]
-        # for x in ifaces:
-        #     if netinfo[x][u'state'].lower() == u'up':
-        #         msg.append(self.make_result(result=x,msg=u'Ok! it\'s up (link-detected)'))
-        #     else:
-        #         msg.append(self.make_result(result=x,msg=u'Nok ! it\'s down (no-link)'))
-        #         status=False
+        ifaces = [x for x in netinfo.keys() if x.startswith(u'eth')]
+        for x in ifaces:
+            if netinfo[x][u'state'].lower() == u'up':
+                msg.append(self.make_result(result=x,msg=u'Ok! it\'s up (link-detected)'))
+            else:
+                msg.append(self.make_result(result=x,msg=u'Nok ! it\'s down (no-link)'))
+                status=False
 
-        # try:
-        #     gw=netinfo[u'gw'][u'via']
-        #     if self.check_ping(gw):
-        #         msg.append(self.make_result(result=gw,msg=u'Ok! gateway it\'s reachable'))
-        #     else:
-        #         status=False
-        #         raise Exception()
-        # except:
-        #     status=False
-        #     msg.append(self.make_result(result=x,msg=u'Nok! gateway not reachable'))
+        try:
+            gw=netinfo[u'gw'][u'via']
+            if self.check_ping(gw):
+                msg.append(self.make_result(result=gw,msg=u'Ok! gateway it\'s reachable'))
+            else:
+                status=False
+                raise Exception()
+        except:
+            status=False
+            msg.append(self.make_result(result=x,msg=u'Nok! gateway not reachable'))
 
         try:
             gw=netinfo[u'gw'][u'via']
@@ -97,54 +97,54 @@ class LlxNetworkTest(Detector):
 
 
             #netinfo[u'name_resolution']=
-        # def check_internet(msg,proxy=False):
-        #     try:
-        #         if proxy or self.check_ping(u'8.8.8.8'):
-        #             if not proxy:
-        #                 msg.append(self.make_result(result=u'Internet ICMP',msg=u'Ok! conectivity available'))
-        #             if self.get_file_from_net(u'http://lliurex.net',proxy):
-        #                 msg.append(self.make_result(result=u'Lliurex.net',msg=u'Ok! conectivity available'))
-        #             else:
-        #                 msg.append(self.make_result(result=u'Lliurex.net',msg=u'Nok! conectivity not available'))
-        #         else:
-        #             raise Exception()
-        #     except Exception as e:
-        #         msg.append(self.make_result(result=u'Internet ICMP',msg=u'Nok! connectivity not available'))
-        #     return msg
+        def check_internet(msg,proxy=False):
+            try:
+                if proxy or self.check_ping(u'8.8.8.8'):
+                    if not proxy:
+                        msg.append(self.make_result(result=u'Internet ICMP',msg=u'Ok! conectivity available'))
+                    if self.get_file_from_net(u'http://lliurex.net',proxy):
+                        msg.append(self.make_result(result=u'Lliurex.net',msg=u'Ok! conectivity available'))
+                    else:
+                        msg.append(self.make_result(result=u'Lliurex.net',msg=u'Nok! conectivity not available'))
+                else:
+                    raise Exception()
+            except Exception as e:
+                msg.append(self.make_result(result=u'Internet ICMP',msg=u'Nok! connectivity not available'))
+            return msg
 
-        # if release != u'client':
-        #     check_internet(msg)
-        # else:
-        #     try:
-        #         mode= netinfo[u'proxy'][u'autoconfig'][u'mode']
-        #         if mode == u'auto':
-        #             pac=netinfo[u'proxy'][u'autoconfig']
-        #             if netinfo[u'proxy'][u'autoconfig'][u'pacfile'] != u'NOT_AVAILABLE':
-        #                 msg.append(self.make_result(result=u'Proxy autoconfig',msg=u'Ok! Pac file available'))
-        #                 check_internet(msg,True)
-        #             else:
-        #                 msg.append(self.make_result(result=u'Proxy autoconfig',msg=u'Nok! file not available'))
-        #         elif mode != u'none':
-        #             check_internet(msg,True)
-        #     except Exception as e:
-        #         msg.append(self.make_result(result=u'Proxy',msg=u'not using proxy'))
-        #         check_internet(msg)
+        if release != u'client':
+            check_internet(msg)
+        else:
+            try:
+                mode= netinfo[u'proxy'][u'autoconfig'][u'mode']
+                if mode == u'auto':
+                    pac=netinfo[u'proxy'][u'autoconfig']
+                    if netinfo[u'proxy'][u'autoconfig'][u'pacfile'] != u'NOT_AVAILABLE':
+                        msg.append(self.make_result(result=u'Proxy autoconfig',msg=u'Ok! Pac file available'))
+                        check_internet(msg,True)
+                    else:
+                        msg.append(self.make_result(result=u'Proxy autoconfig',msg=u'Nok! file not available'))
+                elif mode != u'none':
+                    check_internet(msg,True)
+            except Exception as e:
+                msg.append(self.make_result(result=u'Proxy',msg=u'not using proxy'))
+                check_internet(msg)
 
         # CHECK NAME RESOLUTION
 
-        # if resolution[u'UNRESOLVED']:
-        #     msg.append(self.make_result(result=resolution[u'UNRESOLVED'],msg=u'Nok ! not resolvable'))
-        #     status=False
-        # if resolution[u'RESOLVED']:
-        #     msg.append(self.make_result(result=resolution[u'RESOLVED'],msg=u'Ok ! it\'s resolvable'))
-        #     if resolution[u'UNREACHABLE']:
-        #         msg.append(self.make_result(result=resolution[u'UNREACHABLE'],msg=u'Nok ! not reachable'))
-        #         status=False
-        #     else:
-        #         msg.append(self.make_result(result=resolution[u'REACHABLE'],msg=u'Ok! it\'s reachable'))
+        if resolution[u'UNRESOLVED']:
+            msg.append(self.make_result(result=resolution[u'UNRESOLVED'],msg=u'Nok ! not resolvable'))
+            status=False
+        if resolution[u'RESOLVED']:
+            msg.append(self.make_result(result=resolution[u'RESOLVED'],msg=u'Ok ! it\'s resolvable'))
+            if resolution[u'UNREACHABLE']:
+                msg.append(self.make_result(result=resolution[u'UNREACHABLE'],msg=u'Nok ! not reachable'))
+                status=False
+            else:
+                msg.append(self.make_result(result=resolution[u'REACHABLE'],msg=u'Ok! it\'s reachable'))
 
-        #msg=u''.join(msg)
-        #output={u'LLXNETWORK_TEST':{u'status':status,u'msg':msg}}
+        msg=u''.join(msg)
         output={}
         output[u'NETINFO']=netinfo
+        output[u'LLXNETWORK_TEST']={u'status':status,u'msg':msg}
         return output

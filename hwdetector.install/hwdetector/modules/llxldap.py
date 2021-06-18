@@ -83,7 +83,10 @@ class LlxLdap(Detector):
         for p in ports:
             out[p]=self.check_open_port(server,p)
         try:
-            self.file_find_line(self.execute(run=u'netstat -nx'),u'/var/run/slapd/ldapi')
+            if os.stat('/usr/bin/netstat'):
+                self.file_find_line(self.execute(run=u'netstat -nx'),u'/var/run/slapd/ldapi')
+            else:
+                os.stat('/var/run/slapd/ldapi')
             out[u'LDAPI']=True
         except Exception as e:
             out[u'LDAPI']=False

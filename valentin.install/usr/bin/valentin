@@ -18,7 +18,7 @@ try:
     import gi
     gi.require_version('Gtk','3.0')
     from gi.repository import Gtk,GObject
-    GObject.threads_init()
+    #GObject.threads_init()
 except Exception as e:
     log.error('Unable to import Gtk libraries: {}'.format(e))
 

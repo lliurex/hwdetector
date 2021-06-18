@@ -252,6 +252,9 @@ class LlxHelpers(Detector):
                 group = u'nogroup'
             else:
                 params.setdefault(u'preexec_fn', self.set_root_ids)
+        else:
+            if kwargs.get('asroot') == True:
+                log.warning('Can\'t use rootmote execution for: \'{}\''.format(' '.join(runlist)))
 
         params.setdefault(u'shell',shell)
         stdout=None
@@ -343,7 +346,11 @@ class LlxHelpers(Detector):
         paths=[x for x in paths if os.path.exists(x)]
 
         if regexp:
-            if isinstance(regexp,re._pattern_type):
+            try:
+                typ=re._pattern_type
+            except:
+                typ=re.Pattern
+            if isinstance(regexp,typ):
                 reg=regexp
             else:
                 reg=re.compile(regexp,re.UNICODE)
