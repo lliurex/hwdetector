@@ -252,6 +252,9 @@ class LlxHelpers(Detector):
                 group = u'nogroup'
             else:
                 params.setdefault(u'preexec_fn', self.set_root_ids)
+        else:
+            if kwargs.get('asroot') == True:
+                log.warning('Can\'t use rootmote execution for: \'{}\''.format(' '.join(runlist)))
 
         params.setdefault(u'shell',shell)
         stdout=None

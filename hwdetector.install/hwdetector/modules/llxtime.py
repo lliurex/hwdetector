@@ -25,14 +25,18 @@ class LlxTime(Detector):
         m = re.search(r'Time zone: (?P<TIMEZONE>.*)', timedatectl)
         if m:
             output.update(m.groupdict())
-        m = re.search(r'Network time on: (?P<NTPENABLED>yes|no)', timedatectl)
+        m = re.search(r'System clock synchronized: (?P<NTPENABLED>yes|no)', timedatectl)
         if m:
             output.update(m.groupdict())
-        m = re.search(r'NTP synchronized: (?P<NTPSYNC>yes|no)', timedatectl)
+        m = re.search(r'NTP service: (?P<NTPSERVICE>[^ ]+)', timedatectl)
+        if m:
+            output.update(m.groupdict())
+        m = re.search(r'RTC in local TZ: (?P<RTCLOCALTZ>yes|no)', timedatectl)
         if m:
             output.update(m.groupdict())
 
         synced = False
+        ntp_st = False
         try:
             os.stat('/usr/bin/ntpq')
         except:
@@ -43,10 +47,9 @@ class LlxTime(Detector):
                 for line in ntp_st.split(u'\n'):
                     m = re.search(r'^\*(?P<SYNCSERVER>\d+\.\d+\.\d+\.\d+)', line)
                     if m:
-                        if output[u'NTPENABLED'] == u'yes' and output[u'NTPSYNC'] == u'yes':
-                            synced = True
-                            output.update(m.groupdict())
-                            break
+                        synced = True
+                        output.update(m.groupdict())
+                        break
             except Exception as e:
                 ntp_st = str(e)
 

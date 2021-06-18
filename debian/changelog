@@ -1,3 +1,9 @@
+hwdetector (0.1.9) focal; urgency=medium
+
+  * New distro fixes
+
+ -- M.Angel Juan <m.angel.juan@gmail.com>  Fri, 18 Jun 2021 14:15:16 +0200
+
 hwdetector (0.1.8) focal; urgency=medium
 
   * Focal release
