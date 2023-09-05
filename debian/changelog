@@ -1,3 +1,9 @@
+hwdetector (0.11.9) jammy; urgency=medium
+
+  * Initial release for Jammy
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 05 Sep 2023 11:14:19 +0200
+
 hwdetector (0.1.9) focal; urgency=medium
 
   * New distro fixes
