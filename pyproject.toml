@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools","setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hwdetector"
+version = "0.1"
+description = "Simple system detector"
+authors = [
+	{ name = "M.Angel Juan", email="m.angel.juan@gmail.com" },
+	{ name = "LliureX Team"}
+]
+license = {text="GPL-3"}
+urls = {repository="https://github.com/lliurex/hwdetector"}
+
+[tool.setuptools]
+package-dir={""="hwdetector.install"}
+

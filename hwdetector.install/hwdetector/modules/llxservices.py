@@ -129,7 +129,7 @@ class LlxServices(Detector):
             has_squid=True
         if has_squid:
             main_conf=self.uncomment(u'/etc/squid/squid.conf')
-            lines=self.file_find_line(main_conf,u'[^\.]+\.conf"$',multiple_result=True)
+            lines=self.file_find_line(main_conf,r'[^\.]+\.conf"$',multiple_result=True)
             files = [ re.findall(r'[\'\"](\S+)[\'\"]',f[0],re.UNICODE)[0] for f in lines]
             file_contents={}
             file_contents.setdefault(u'/etc/squid/squid.conf',main_conf)
@@ -144,7 +144,7 @@ class LlxServices(Detector):
             has_samba=True
         if has_samba:
             main_conf=self.uncomment(u'/etc/samba/smb.conf',comments=[u';',u'#'])
-            lines=self.file_find_line(main_conf,[[u'include',u'=',u'\S+']])
+            lines=self.file_find_line(main_conf,[[u'include',u'=',r'\S+']])
             paths=[line[0].split(u'=')[1].strip() for line in lines]
             if paths:
                 content=main_conf+'\n'+self.compact_files(path=paths)
