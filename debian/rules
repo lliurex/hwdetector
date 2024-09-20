@@ -18,16 +18,3 @@ export PYBUILD_DESTDIR_python3=debian/hwdetector
 
 %:
 	dh $@ --with python3 --buildsystem pybuild
-
-override_dh_auto_install:
-	dh_auto_install
-	python3 setup.py install --root $(CURDIR)/debian/hwdetector --prefix=/usr
-	python3 setup.py clean --all
-	rm -rf $(CURDIR)/debian/hwdetector/usr/lib/python3/site-packages
-
-
-# dh_make generated override targets
-# This is example for Cmake (See https://bugs.debian.org/641051 )
-#override_dh_auto_configure:
-#	dh_auto_configure -- #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
-
