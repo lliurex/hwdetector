@@ -16,7 +16,7 @@ class LlxNetworkResolver(Detector):
     def addr_checks(self,*args,**kwargs):
         ns=str(args[0])
         ret=False
-        only_ip = re.findall(u'\d+\.\d+\.\d+\.\d+',ns)
+        only_ip = re.findall(r'\d+\.\d+\.\d+\.\d+',ns)
         go_to_ping = True
 
         if only_ip:

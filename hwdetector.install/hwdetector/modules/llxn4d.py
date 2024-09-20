@@ -30,10 +30,10 @@ class LlxN4d(Detector):
                 into_plugins=False
                 for line in status:
                     line = line.strip()
-                    if not into_plugins and re.search('\[Core\] Initializing plugins',line):
+                    if not into_plugins and re.search(r'\[Core\] Initializing plugins',line):
                         into_plugins=True
                     if into_plugins:
-                        if re.search('\[Core\] Executing startups',line):
+                        if re.search(r'\[Core\] Executing startups',line):
                             break
                         m = re.search(r'(?P<pluginname>\w+)\s+\.{3}\s+(?P<status>\w+)?$',line)
                         if m:

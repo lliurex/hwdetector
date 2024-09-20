@@ -139,11 +139,11 @@ class LlxHelpers(Detector):
                 s=f.readlines()
 
         if not multimatch:
-            r=re.compile(u'\s*'.join(keys),re.IGNORECASE | re.UNICODE)
+            r=re.compile(r'\s*'.join(keys),re.IGNORECASE | re.UNICODE)
         else:
             r=[]
             for k in keys:
-                r.append(re.compile(u'\s*'.join(k),re.IGNORECASE | re.UNICODE))
+                r.append(re.compile(r'\s*'.join(k),re.IGNORECASE | re.UNICODE))
         i=0
         output = []
         for line in s:
